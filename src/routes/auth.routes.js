@@ -8,6 +8,6 @@ authRouter.use("/register", register);
 // Login
 authRouter.use("/login", login);
 // Profile
-authRouter.use("/profile");
+// authRouter.use("/profile");
 
 export default authRouter;

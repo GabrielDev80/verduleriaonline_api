@@ -21,20 +21,15 @@ const register = async (userData) => {
 
 const login = async (email, password) => {
   const user = await User.findOne({ email: email });
+  console.log("login back: ", user);
 
   if (!user) {
-    throw new Error({
-      status: 401,
-      message: "Invalid Credentials",
-    });
+    throw new Error("Invalid Credentials");
   }
   const isValid = await comparePassword(password, user.password);
-
+  console.log("isValid: ", isValid);
   if (!isValid) {
-    throw new Error({
-      status: 401,
-      message: "Invalid Credentials",
-    });
+    throw new Error("Invalid Credentials");
   }
 
   const token = generateToken({
