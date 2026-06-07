@@ -4,6 +4,7 @@ import express from "express";
 import __dirname from "./dirname.js";
 import cors from "cors";
 
+import indexRouter from "./routes/index.routes.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 
@@ -36,6 +37,7 @@ app.use(
     }),
     secret: config.session.secret,
     resave: false,
+    saveUninitialized: false,
     cookie: {
       maxAge: config.session.ttl * 1000,
       secure: false, //* Cambiar a true en Producción
@@ -47,5 +49,6 @@ app.use(
 app.use(morgan("dev"));
 
 /* Routes */
-//TODO: agregar el indexRouter
+app.use(indexRouter);
+
 export default app;

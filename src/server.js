@@ -2,6 +2,7 @@
 import app from "./app.js";
 import config from "./config/config.js";
 import getLogger from "./utils/logger.utils.js";
+import db from "./config/mongoConnection.js";
 
 // Logger
 const log = getLogger();
@@ -11,12 +12,12 @@ const port = config.server.port;
 /* Start Server */
 const server = app.listen(port, async (err) => {
   try {
-    // await db;
+    await db;
     log.info(
       `Server running on port ${port}, in ${config.environment.env} mode.`,
     );
   } catch (error) {
-    log.error("*** CONNECTION ERROR ***: ", error.message);
+    log.error("*** CONNECTION ERROR ***: ", error);
   }
 });
 
