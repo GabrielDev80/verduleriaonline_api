@@ -1,4 +1,4 @@
-import Product from "../models/product.model";
+import Product from "../models/product.model.js";
 
 const getAllProducts = async () => await Product.find().lean();
 
@@ -14,3 +14,12 @@ const updateProductById = async (id, data) =>
 
 const deleteProductById = async (id) =>
   await Product.findByIdAndDelete({ _id: id }).lean();
+
+export {
+  getAllProducts,
+  getProductById,
+  getProductByEmail,
+  createProduct,
+  updateProductById,
+  deleteProductById,
+};
