@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { register, login } from "../controllers/auth.controller.js";
+import { isCompleteData } from "../middlewares/auth.middleware.js";
 
 const authRouter = Router();
 
 // Register
-authRouter.use("/register", register);
+authRouter.post("/register", isCompleteData, register);
 // Login
-authRouter.use("/login", login);
+authRouter.post("/login", login);
 // Profile
 // authRouter.use("/profile");
 
