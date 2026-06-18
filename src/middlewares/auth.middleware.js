@@ -1,4 +1,7 @@
+import jwt from "jsonwebtoken";
+import config from "../config/config.js";
 import getLogger from "../utils/logger.utils.js";
+
 const log = getLogger();
 
 export const isCompleteData = (req, res, next) => {
@@ -35,4 +38,53 @@ export const isCompleteData = (req, res, next) => {
   }
 
   next();
+};
+
+export const authenticate = (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    log.info("authenticate (authHeader): ", authHeader);
+
+    if (!authHeader?.startsWith("Bearer ")) {
+      return res.status(401).json({
+        status: "error",
+        message: "No autorizado",
+      });
+    }
+
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({
+        status: "error",
+        message: "Token no proporcionado",
+      });
+    }
+
+    const payload = jwt.verify(token, config.jwt.secret);
+    log.info("authenticate (payload): ", payload); //! Reemplazar en producción
+    // log.info("Authorization header recipe");
+
+    req.user = payload;
+
+    next();
+  } catch (error) {
+    log.error("Token inválido o expirado: ", error);
+    return res.status(401).json({
+      status: "error",
+      message: "Token inválido o expirado",
+    });
+  }
+};
+
+export const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      log.error("authorize - Acceso denegado");
+      return res.status(403).json({
+        status: "error",
+        messaje: "Acceso denegado",
+      });
+    }
+    next();
+  };
 };

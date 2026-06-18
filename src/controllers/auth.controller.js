@@ -1,3 +1,4 @@
+import { loginResponse } from "../dto/auth.dto.js";
 import * as authService from "../services/auth.services.js";
 
 export const register = async (req, res) => {
@@ -7,6 +8,8 @@ export const register = async (req, res) => {
 
     res.status(201).json({
       status: "success",
+      message:
+        "¡Bienvenido a Verde Web Online! Tu registro se completó correctamente.",
       payload: user,
     });
   } catch (error) {
@@ -22,10 +25,12 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const { user, token } = await authService.login(email, password);
+    const userResponse = loginResponse(user);
 
     res.status(200).json({
       status: "success",
-      payload: { user: user, token: token },
+      message: `¡Hola de nuevo, ${user.username}!`,
+      payload: { user: userResponse, token: token },
     });
   } catch (error) {
     console.error("authController - login: ", error);
@@ -35,5 +40,3 @@ export const login = async (req, res) => {
     });
   }
 };
-
-// export const profile = async(req, res, next);
