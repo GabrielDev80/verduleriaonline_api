@@ -3,18 +3,19 @@ import { normalizedUserData } from "../utils/auth/auth.utils.js";
 import { createHash, comparePassword } from "../utils/bcrypt.js";
 import { AppError } from "../utils/errors.js";
 import { generateToken } from "../utils/jwt.js";
+import getLogger from "../utils/logger.utils.js";
+
+const log = getLogger();
 
 const register = async (userData) => {
   const formattedData = normalizedUserData(userData);
-  // const { username, email, password } = userData;
 
-  // console.log("authService - register: ", userData);
   const existingUser = await User.findOne({
     email: formattedData.email,
   });
 
   if (existingUser) {
-    // console.error("authService - register: User already exists");
+    log.error("authService - register: User already exists");
     throw new AppError("El email ya está registrado.", 400);
   }
 
@@ -30,7 +31,6 @@ const login = async (email, password) => {
   const normalizedEmail = email.trim().toLowerCase();
 
   const user = await User.findOne({ email: normalizedEmail });
-  // console.log("authService - login: ", user);
 
   if (!user) {
     throw new AppError(

@@ -3,7 +3,6 @@ import * as authService from "../services/auth.services.js";
 
 export const register = async (req, res) => {
   try {
-    // console.log("authController - register: ", req.body);
     const user = await authService.register(req.body);
 
     res.status(201).json({

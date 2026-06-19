@@ -15,7 +15,7 @@ export const isCompleteData = (req, res, next) => {
   }
 
   const { username, email, password } = req.body;
-
+  // log.info(req.body)
   if (!username?.trim()) {
     return res.status(400).json({
       status: "error",

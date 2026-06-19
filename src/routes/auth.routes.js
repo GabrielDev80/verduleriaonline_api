@@ -9,6 +9,6 @@ authRouter.post("/register", isCompleteData, register);
 // Login
 authRouter.post("/login", login);
 // Profile
-// authRouter.use("/profile");
+// authRouter.use("/me", authenticate, auth.controller.me);
 
 export default authRouter;
