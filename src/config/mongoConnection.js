@@ -4,15 +4,23 @@ import getLogger from "../utils/logger.utils.js";
 
 const log = getLogger();
 
-const connection = mongoose
-  .connect(config.db.cs, {
-    dbName: config.db.dbName,
-  })
-  .catch((err) => log.fatal(err.message));
+export const connectDB = async () => {
+  try {
+    await mongoose.connect(config.db.cs, {
+      dbName: config.db.dbName,
+    });
 
-const db = mongoose.connection;
+    log.info("Connected to MongoDB succesfully");
+  } catch (error) {
+    log.fatal(`*** MongoDB connection error ***: ${error.message}`);
+    throw error;
+  }
+};
 
-db.on("error", console.error.bind(console, "*** MongoDB connection error ***"));
-db.once("open", () => log.info("Connection succesfully to MongoDB"));
+mongoose.connection.on("disconnected", () => {
+  log.warn("MongoDB disconnected");
+});
 
-export default db;
+mongoose.connection.on("error", (error) => {
+  log.error(`*** MongoDB connection error ***: ${error.message}`);
+});

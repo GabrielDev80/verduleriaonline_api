@@ -2,23 +2,28 @@
 import app from "./app.js";
 import config from "./config/config.js";
 import getLogger from "./utils/logger.utils.js";
-import db from "./config/mongoConnection.js";
+import { connectDB } from "./config/mongoConnection.js";
 
-// Logger
 const log = getLogger();
-// Port
 const port = config.server.port;
 
 /* Start Server */
-const server = app.listen(port, async (err) => {
+const startServer = async () => {
   try {
-    await db;
-    log.info(
-      `Server running on port ${port}, in ${config.environment.env} mode.`,
-    );
+    await connectDB();
+
+    const server = app.listen(port, () => {
+      log.info(
+        `Server running on port ${port}, in ${config.environment.env} mode.`,
+      );
+    });
+    return server;
   } catch (error) {
-    log.error("*** CONNECTION ERROR ***: ", error);
+    log.fatal(`*** CONNECTION STARTUP ERROR ***: , ${error.message}`);
+    process.exit(1);
   }
-});
+};
+
+const server = await startServer();
 
 export default server;
