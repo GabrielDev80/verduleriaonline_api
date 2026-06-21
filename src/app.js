@@ -1,23 +1,20 @@
+/********** APP **********/
+
 import "dotenv/config";
-import config from "./config/config.js";
 import express from "express";
-import __dirname from "./dirname.js";
 import cors from "cors";
+import morgan from "morgan";
+import __dirname from "./dirname.js";
 
 import indexRouter from "./routes/index.routes.js";
-
-import morgan from "morgan";
-import getLogger from "./utils/logger.utils.js";
-
-/* Logger */
-const log = getLogger();
+import { ok } from "assert";
 
 /* Express */
 const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", process.env.FRONTEND_URL].filter(Boolean),
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   }),
@@ -28,6 +25,13 @@ app.use(express.static(`${__dirname}/public`));
 
 /* Morgan */
 app.use(morgan("dev"));
+
+app.get("/", (req, res) => {
+  res.json({
+    ok: true,
+    message: "Modo Huerta Online API running 🚀",
+  });
+});
 
 /* Routes */
 app.use(indexRouter);

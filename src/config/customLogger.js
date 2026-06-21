@@ -19,45 +19,56 @@ const customLevelsOptions = {
   },
 };
 
+winston.addColors(customLevelsOptions.colors);
+
+const isVercel = !!process.env.VERCEL;
+
+const consoleDevTransport = new winston.transports.Console({
+  level: "debug",
+  format: winston.format.combine(
+    winston.format.colorize({ colors: customLevelsOptions.colors }),
+    winston.format.simple(),
+  ),
+});
+
+const consoleProdTransport = new winston.transports.Console({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.colorize({ colors: customLevelsOptions.colors }),
+    winston.format.simple(),
+  ),
+});
+
 export const devLog = winston.createLogger({
   levels: customLevelsOptions.levels,
-  transports: [
-    new winston.transports.Console({
-      level: "debug",
-      format: winston.format.combine(
-        winston.format.colorize({ colors: customLevelsOptions.colors }),
-        winston.format.simple(),
-      ),
-    }),
-    // Probar funcionalidad
-    new winston.transports.File({
-      level: "error",
-      filename: "logs/errors_dev.log",
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.simple(),
-      ),
-    }),
-  ],
+  transports: isVercel
+    ? [consoleDevTransport]
+    : [
+        consoleDevTransport,
+        new winston.transports.File({
+          level: "error",
+          filename: "logs/errors_dev.log",
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.simple(),
+          ),
+        }),
+      ],
 });
 
 export const prodLog = winston.createLogger({
   levels: customLevelsOptions.levels,
-  transports: [
-    new winston.transports.Console({
-      level: "info",
-      format: winston.format.combine(
-        winston.format.colorize({ colors: customLevelsOptions.colors }),
-        winston.format.simple(),
-      ),
-    }),
-    new winston.transports.File({
-      level: "error",
-      filename: "logs/errors.log",
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.simple(),
-      ),
-    }),
-  ],
+  transports: isVercel
+    ? [consoleProdTransport]
+    : [
+        consoleProdTransport,
+        new winston.transports.File({
+          level: "error",
+          filename: "logs/errors.log",
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.simple(),
+          ),
+        }),
+      ],
 });

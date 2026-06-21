@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 const config = {};
 
-const environment = process.env.NODE_ENV || "development"; // change environment to 'production', 'development'or 'testing'.
+const environment = process.env.NODE_ENV || "production"; // change environment to 'production', 'development'or 'testing'.
 
 dotenv.config({
   path:
