@@ -7,7 +7,6 @@ import morgan from "morgan";
 import __dirname from "./dirname.js";
 
 import indexRouter from "./routes/index.routes.js";
-import { ok } from "assert";
 
 /* Express */
 const app = express();
