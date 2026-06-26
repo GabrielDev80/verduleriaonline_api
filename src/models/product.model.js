@@ -28,6 +28,14 @@ const productSchema = mongoose.Schema(
       type: String,
       enum: ["bandeja", "Kg", "unidad", "atado"],
     },
+    min_sale_quantity: {
+      type: Number,
+      default: 1,
+    },
+    sale_step: {
+      type: Number,
+      default: 1,
+    },
     stock: {
       quantity: {
         type: Number,
