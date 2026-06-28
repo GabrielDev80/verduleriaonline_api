@@ -7,6 +7,7 @@ import morgan from "morgan";
 import __dirname from "./dirname.js";
 
 import indexRouter from "./routes/index.routes.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 /* Express */
 const app = express();
@@ -34,5 +35,7 @@ app.get("/", (req, res) => {
 
 /* Routes */
 app.use(indexRouter);
+
+app.use(errorHandler);
 
 export default app;
