@@ -61,7 +61,9 @@ export const authenticate = (req, res, next) => {
     }
 
     const payload = jwt.verify(token, config.jwt.secret);
-    log.info("authenticate (payload): ", payload); //! Reemplazar en producción
+    if (config.env === "development") {
+      log.info("authenticate (payload): ", payload);
+    }
     // log.info("Authorization header recipe");
 
     req.user = payload;

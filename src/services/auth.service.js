@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import * as cartService from "../services/carts.service.js";
 import { normalizedUserData } from "../utils/auth/auth.utils.js";
 import { createHash, comparePassword } from "../utils/bcrypt.js";
 import { AppError } from "../utils/errors.js";
@@ -23,6 +24,11 @@ const register = async (userData) => {
     ...formattedData,
     password: createHash(formattedData.password),
   });
+
+  const cart = await cartService.createUserCart();
+
+  user.cart = cart._id;
+  await user.save();
   // console.log("authService - register: ", user);
   return user;
 };
@@ -46,6 +52,8 @@ const login = async (email, password) => {
       400,
     );
   }
+
+  await cartService.findOrCreateCart(user);
 
   const token = generateToken({
     id: user._id,

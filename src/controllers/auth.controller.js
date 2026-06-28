@@ -1,5 +1,5 @@
 import { loginResponse } from "../dto/auth.dto.js";
-import * as authService from "../services/auth.services.js";
+import * as authService from "../services/auth.service.js";
 
 export const register = async (req, res) => {
   try {
@@ -8,7 +8,7 @@ export const register = async (req, res) => {
     res.status(201).json({
       status: "success",
       message:
-        "¡Bienvenido a Verde Web Online! Tu registro se completó correctamente.",
+        "¡Bienvenido a Modo Huerta Online! Tu registro se completó correctamente.",
       payload: user,
     });
   } catch (error) {
