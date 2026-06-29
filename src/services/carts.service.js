@@ -1,18 +1,29 @@
 import Cart from "../models/cart.model.js";
+import User from "../models/user.model.js";
+import { cartDTO } from "../dto/carts.dto.js";
 
 // ! Private Service(createCart)
-const createCart = async (userId) => {
+const createCart = async () => {
   return await Cart.create({
-    user: userId,
-    items: [],
+    products: [],
   });
+};
+// ! Private Service(populateCart)
+const populateCart = async (cartId) => {
+  return await Cart.findById(cartId).populate("products.product");
 };
 
 export const createUserCart = async () => {
   return await createCart();
 };
 
-export const findOrCreateCart = async (user) => {
+export const findOrCreateCart = async (userId) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("Usuario no encontrado");
+  }
+
   if (user.cart) {
     const cart = await Cart.findById(user.cart);
 
@@ -31,23 +42,24 @@ export const findOrCreateCart = async (user) => {
 
 // Obtener carrito
 export const getCartByUserId = async (userId) => {
-  let cart = await findOrCreateCart(userId);
+  // console.log("cart.service (getCartByUserId) - userId: ", userId);
 
-  return await Cart.findById(cart._id).populate("items.product");
+  const cart = await findOrCreateCart(userId);
+
+  return cartDTO(await populateCart(cart._id));
 };
 
 // Agregar producto al carrito
-export const addProduct = async (userId, productId, quantity = 1) => {
+export const addProduct = async (userId, productId, quantity) => {
   const cart = await findOrCreateCart(userId);
-
-  const existingProduct = cart.items.find((item) =>
+  const existingProduct = cart.products.find((item) =>
     item.product._id.equals(productId),
   );
 
   if (existingProduct) {
     existingProduct.quantity += quantity;
   } else {
-    cart.items.push({
+    cart.products.push({
       product: productId,
       quantity,
     });
@@ -55,14 +67,14 @@ export const addProduct = async (userId, productId, quantity = 1) => {
 
   await cart.save();
 
-  return await Cart.findById(cart._id).populate("items.product");
+  return cartDTO(await populateCart(cart._id));
 };
 
 // Actualizar cantidad
 export const updateProductQuantity = async (userId, productId, quantity) => {
   const cart = await findOrCreateCart(userId);
 
-  const item = cart.items.find((item) => item.product._id.equals(productId));
+  const item = cart.products.find((item) => item.product._id.equals(productId));
 
   if (!item) {
     throw new Error("Producto no encontrado en el carrito");
@@ -72,29 +84,27 @@ export const updateProductQuantity = async (userId, productId, quantity) => {
 
   await cart.save();
 
-  return await Cart.findById(cart._id).populate("items.product");
+  return cartDTO(await populateCart(cart._id));
 };
 
 // Eliminar un producto del carrito
 export const removeProduct = async (userId, productId) => {
   const cart = await findOrCreateCart(userId);
 
-  cart.items = cart.items.filter(
+  cart.products = cart.products.filter(
     (item) => item.product._id.toString() !== productId,
   );
 
   await cart.save();
 
-  return await Cart.findById(cart._id).populate("items.product");
+  return cartDTO(await populateCart(cart._id));
 };
 
 // Vaciar carrito
 export const clearCart = async (userId) => {
   const cart = await getCartByUserId(userId);
 
-  cart.items = [];
-
-  await cart.save();
+  cart.products = [];
 
   return cart;
 };
