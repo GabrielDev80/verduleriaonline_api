@@ -3,6 +3,7 @@ import * as CartService from "../services/carts.service.js";
 export const getCart = async (req, res, next) => {
   try {
     const userId = req.user.id;
+
     const cart = await CartService.getCartByUserId(userId);
 
     res.status(200).json({
@@ -34,7 +35,8 @@ export const addProduct = async (req, res, next) => {
 export const updateProduct = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { productId, quantity } = req.body;
+    const { productId } = req.params;
+    const { quantity } = req.body;
 
     const cart = await CartService.updateProductQuantity(
       userId,
@@ -72,6 +74,7 @@ export const removeProduct = async (req, res, next) => {
 export const clearCart = async (req, res, next) => {
   try {
     const userId = req.user.id;
+    console.log("userId: ", req.user.id);
     await CartService.clearCart(userId);
 
     res.status(200).json({
