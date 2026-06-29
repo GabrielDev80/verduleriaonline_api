@@ -37,7 +37,7 @@ const login = async (email, password) => {
   const normalizedEmail = email.trim().toLowerCase();
 
   const user = await User.findOne({ email: normalizedEmail });
-
+  // log.info("authService (back) - login (user): ", user);
   if (!user) {
     throw new AppError(
       "Correo electrónico o contraseña incorrectos. Inténtalo de nuevo.",
@@ -60,6 +60,7 @@ const login = async (email, password) => {
     email: user.email,
     role: user.role,
   });
+  // log.info("authService (back) - login (token): ", token);
 
   return {
     user,

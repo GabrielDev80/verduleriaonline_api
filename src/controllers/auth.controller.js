@@ -1,5 +1,8 @@
 import { loginResponse } from "../dto/auth.dto.js";
 import * as authService from "../services/auth.service.js";
+import getLogger from "../utils/logger.utils.js";
+
+const log = getLogger();
 
 export const register = async (req, res) => {
   try {
@@ -24,7 +27,10 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const { user, token } = await authService.login(email, password);
+
     const userResponse = loginResponse(user);
+    // log.info("login Backend - userResponse: " + userResponse);
+    // log.info("login Backend - Token: " + token);
 
     res.status(200).json({
       status: "success",

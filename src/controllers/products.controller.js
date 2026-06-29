@@ -136,7 +136,7 @@ const pauseProduct = async (req, res) => {
     const { id } = req.params;
     const data = req.body;
     const pausedProduct = await prodServices.update(id, data.active);
-    log.info("pauseProduct: ".pausedProduct);
+    log.info("pauseProduct: " + pausedProduct);
     res.status(200).json({
       status: "succes",
       message: "Product paused successfully",
