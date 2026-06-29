@@ -43,7 +43,7 @@ export const isCompleteData = (req, res, next) => {
 export const authenticate = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    log.info("authenticate (authHeader): ", authHeader);
+    // log.info("authenticate (authHeader): " + authHeader);
 
     if (!authHeader?.startsWith("Bearer ")) {
       return res.status(401).json({
@@ -61,10 +61,9 @@ export const authenticate = (req, res, next) => {
     }
 
     const payload = jwt.verify(token, config.jwt.secret);
-    if (config.env === "development") {
-      log.info("authenticate (payload): ", payload);
-    }
-    // log.info("Authorization header recipe");
+    // if (config.env === "development") {
+    //   log.info("authenticate (payload): ", payload);
+    // }
 
     req.user = payload;
 
