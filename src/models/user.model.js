@@ -2,22 +2,38 @@ import mongoose from "mongoose";
 
 const userCollection = "Users";
 
-const deliveryAddressSchema = new mongoose.Schema(
-  {
-    address: String,
-    between_streets: String,
-    location: String,
-    additional_data: String,
+const deliveryAddressSchema = new mongoose.Schema({
+  address: {
+    type: String,
+    trim: true,
   },
-  {
-    _id: false,
+  between_streets: {
+    type: String,
+    trim: true,
   },
-);
+  location: {
+    type: String,
+    trim: true,
+  },
+  additional_data: {
+    type: String,
+    trim: true,
+  },
+});
 const deliveryDataSchema = new mongoose.Schema(
   {
-    first_name: String,
-    last_name: String,
-    phone: String,
+    first_name: {
+      type: String,
+      trim: true,
+    },
+    last_name: {
+      type: String,
+      trim: true,
+    },
+    phone: {
+      type: String,
+      trim: true,
+    },
     delivery_addresses: [deliveryAddressSchema],
   },
   {
