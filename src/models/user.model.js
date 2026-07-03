@@ -3,6 +3,11 @@ import mongoose from "mongoose";
 const userCollection = "Users";
 
 const deliveryAddressSchema = new mongoose.Schema({
+  address_alias: {
+    type: String,
+    trim: true,
+    default: "",
+  },
   address: {
     type: String,
     trim: true,
@@ -18,6 +23,10 @@ const deliveryAddressSchema = new mongoose.Schema({
   additional_data: {
     type: String,
     trim: true,
+  },
+  is_default: {
+    type: Boolean,
+    default: false,
   },
 });
 const deliveryDataSchema = new mongoose.Schema(
@@ -83,4 +92,5 @@ const userSchema = new mongoose.Schema(
 );
 
 const User = mongoose.model(userCollection, userSchema);
+
 export default User;

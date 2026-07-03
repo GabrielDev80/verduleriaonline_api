@@ -1,4 +1,4 @@
-import * as userServices from "../services/users.services.js";
+import * as userServices from "../services/users.service.js";
 import getLogger from "../utils/logger.utils.js";
 
 const log = getLogger();
@@ -99,4 +99,40 @@ const updateUser = async (req, res) => {
   }
 };
 
-export { getAllUsers, getUserById, getUserByEmail, updateUser };
+const updateDeliveryData = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deliveryData = req.body;
+
+    const user = await userServices.updateDeliveryData(id, deliveryData);
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User Not Found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Delivery data updated succesfully",
+      payload: user,
+    });
+  } catch (error) {
+    log.error("Internal Server Error", error);
+
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export {
+  getAllUsers,
+  getUserById,
+  getUserByEmail,
+  updateUser,
+  updateDeliveryData,
+};
