@@ -18,9 +18,9 @@ cartRouter.get("/", getCart);
 
 cartRouter.post("/products", addProduct);
 
-cartRouter.patch("/products/:productId", updateProduct);
+cartRouter.patch("/products/:pid", updateProduct);
 
-cartRouter.delete("/products/:productId", removeProduct);
+cartRouter.delete("/products/:pid", removeProduct);
 
 cartRouter.delete("/", clearCart);
 

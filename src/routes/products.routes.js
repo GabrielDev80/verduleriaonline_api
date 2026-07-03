@@ -6,9 +6,9 @@ const prodRouter = Router();
 
 prodRouter.get("/", prodController.getproducts);
 prodRouter.post("/", prodController.createProduct);
-prodRouter.get("/:id", prodController.getProductById);
-prodRouter.patch("/:id", prodController.updateProduct);
-prodRouter.patch("/:id", prodController.pauseProduct);
-prodRouter.delete("/:id", prodController.deleteProduct);
+prodRouter.get("/:pid", prodController.getProductById);
+prodRouter.patch("/:pid", prodController.updateProduct);
+prodRouter.patch("/:pid", prodController.pauseProduct);
+prodRouter.delete("/:pid", prodController.deleteProduct);
 
 export default prodRouter;
