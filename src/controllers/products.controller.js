@@ -1,5 +1,5 @@
 import { productDTO } from "../dto/products.dto.js";
-import * as prodServices from "../services/products.services.js";
+import * as prodServices from "../services/products.service.js";
 import getLogger from "../utils/logger.utils.js";
 import {
   calculateProfitAmount,

@@ -7,7 +7,7 @@ const getById = async (id) => await Product.findOne({ _id: id }).lean();
 const create = async (data) => await Product.create(data);
 
 const update = async (id, data) =>
-  await Product.findByIdAndUpdate({ _id: id }, { $set: info }, { new: true });
+  await Product.findByIdAndUpdate({ _id: id }, { $set: data }, { new: true });
 
 const remove = async (id) =>
   await Product.findByIdAndDelete({ _id: id }).lean();
