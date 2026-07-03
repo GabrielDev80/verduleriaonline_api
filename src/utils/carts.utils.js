@@ -4,7 +4,7 @@ export const validateCartProducts = (cartProducts) => {
       throw new Error("Uno de los productos ya no existe.");
     }
 
-    if (!item.product.is_active) {
+    if (!item.product.active) {
       throw new Error(`${item.product.name} ya no está disponible.`);
     }
 
