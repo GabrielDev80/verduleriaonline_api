@@ -1,4 +1,9 @@
 import mongoose from "mongoose";
+import {
+  BASE_UNITS,
+  PROD_CATEGORIES,
+  SALES_UNITS,
+} from "../constants/common.constants.js";
 
 const productCollection = "Products";
 const productSchema = mongoose.Schema(
@@ -14,7 +19,7 @@ const productSchema = mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["frutas", "verduras", "almacen"],
+      enum: PROD_CATEGORIES,
       required: true,
     },
     image: {
@@ -26,7 +31,7 @@ const productSchema = mongoose.Schema(
     },
     sales_unit: {
       type: String,
-      enum: ["bandeja", "Kg", "unidad", "atado"],
+      enum: SALES_UNITS,
     },
     min_sale_quantity: {
       type: Number,
@@ -43,7 +48,7 @@ const productSchema = mongoose.Schema(
       },
       unit: {
         type: String,
-        enum: ["bandeja", "Kg", "un"],
+        enum: BASE_UNITS,
       },
     },
     observations: {
@@ -55,7 +60,7 @@ const productSchema = mongoose.Schema(
     },
 
     //* Costos mayorista
-    purchase_costs: {
+    purchase_info: {
       package_cost: {
         type: Number,
         required: true,
@@ -67,7 +72,7 @@ const productSchema = mongoose.Schema(
       unit: {
         type: String,
         required: true,
-        enum: ["bandeja", "Kg", "un"],
+        enum: BASE_UNITS,
       },
       unit_cost: {
         type: Number,
