@@ -35,14 +35,10 @@ export const addProduct = async (req, res, next) => {
 export const updateProduct = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { productId } = req.params;
+    const { pid } = req.params;
     const { quantity } = req.body;
 
-    const cart = await CartService.updateProductQuantity(
-      userId,
-      productId,
-      quantity,
-    );
+    const cart = await CartService.updateProductQuantity(userId, pid, quantity);
 
     res.status(200).json({
       status: "success",
@@ -57,9 +53,9 @@ export const updateProduct = async (req, res, next) => {
 export const removeProduct = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { productId } = req.params;
+    const { pid } = req.params;
 
-    const cart = await CartService.removeProduct(userId, productId);
+    const cart = await CartService.removeProduct(userId, pid);
 
     res.status(200).json({
       status: "success",
@@ -74,7 +70,6 @@ export const removeProduct = async (req, res, next) => {
 export const clearCart = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    console.log("userId: ", req.user.id);
     await CartService.clearCart(userId);
 
     res.status(200).json({

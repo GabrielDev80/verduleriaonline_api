@@ -2,58 +2,53 @@ import Cart from "../models/cart.model.js";
 import User from "../models/user.model.js";
 import { cartDTO } from "../dto/carts.dto.js";
 
-// ! Private Service(createCart)
+// ========================
+// Helpers
+// ========================
+
 const createCart = async () => {
-  return await Cart.create({
-    products: [],
-  });
+  return await Cart.create({ products: [] });
 };
-// ! Private Service(populateCart)
+
 const populateCart = async (cartId) => {
   return await Cart.findById(cartId).populate("products.product");
 };
 
-export const createUserCart = async () => {
-  return await createCart();
-};
-
-export const findOrCreateCart = async (userId) => {
+const getUserCart = async (userId) => {
   const user = await User.findById(userId);
 
-  if (!user) {
-    throw new Error("Usuario no encontrado");
+  if (!user) throw new Error("Usuario no encontrado");
+
+  let cart = await Cart.findById(user.cart);
+
+  if (!cart) {
+    cart = await createCart();
+    user.cart = cart._id;
+    await user.save();
   }
 
-  if (user.cart) {
-    const cart = await Cart.findById(user.cart);
-
-    if (cart) {
-      return cart;
-    }
-  }
-
-  const cart = await createCart();
-
-  user.cart = cart._id;
-  await user.save();
-
-  return cart;
+  return await Cart.findById(cart._id).populate("products.product");
 };
+// ========================
+// Public Services
+// ========================
 
 // Obtener carrito
 export const getCartByUserId = async (userId) => {
-  // console.log("cart.service (getCartByUserId) - userId: ", userId);
+  const user = await User.findById(userId);
+  if (!user) throw new Error("Usuario no encontrado");
+  if (!user.cart) throw new Error("Carrito no encontrado");
 
-  const cart = await findOrCreateCart(userId);
-
-  return cartDTO(await populateCart(cart._id));
+  const cart = await populateCart(user.cart);
+  return cartDTO(cart);
 };
 
-// Agregar producto al carrito
+// Agregar producto
 export const addProduct = async (userId, productId, quantity) => {
-  const cart = await findOrCreateCart(userId);
-  const existingProduct = cart.products.find((item) =>
-    item.product._id.equals(productId),
+  const cart = await getUserCart(userId);
+
+  const existingProduct = cart.products.find(
+    (item) => String(item.product) === String(productId),
   );
 
   if (existingProduct) {
@@ -72,9 +67,11 @@ export const addProduct = async (userId, productId, quantity) => {
 
 // Actualizar cantidad
 export const updateProductQuantity = async (userId, productId, quantity) => {
-  const cart = await findOrCreateCart(userId);
+  const cart = await getUserCart(userId);
 
-  const item = cart.products.find((item) => item.product._id.equals(productId));
+  const item = cart.products.find(
+    (item) => String(item.product._id) === String(productId),
+  );
 
   if (!item) {
     throw new Error("Producto no encontrado en el carrito");
@@ -87,12 +84,12 @@ export const updateProductQuantity = async (userId, productId, quantity) => {
   return cartDTO(await populateCart(cart._id));
 };
 
-// Eliminar un producto del carrito
+// Eliminar producto
 export const removeProduct = async (userId, productId) => {
-  const cart = await findOrCreateCart(userId);
+  const cart = await getUserCart(userId);
 
   cart.products = cart.products.filter(
-    (item) => item.product._id.toString() !== productId,
+    (item) => String(item.product._id) !== String(productId),
   );
 
   await cart.save();
@@ -102,9 +99,22 @@ export const removeProduct = async (userId, productId) => {
 
 // Vaciar carrito
 export const clearCart = async (userId) => {
-  const cart = await getCartByUserId(userId);
+  const cart = await getUserCart(userId);
 
   cart.products = [];
 
-  return cart;
+  await cart.save();
+
+  return cartDTO(await populateCart(cart.id));
+};
+
+// Obtener documento crudo (debug / internal)
+export const getCartDocument = async (userId) => {
+  const user = await User.findById(userId);
+
+  if (!user?.cart) {
+    throw new Error("Carrito no encontrado");
+  }
+
+  return await Cart.findById(user.cart).populate("products.product");
 };
