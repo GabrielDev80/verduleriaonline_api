@@ -9,6 +9,12 @@ const productCollection = "Products";
 const productSchema = mongoose.Schema(
   {
     //* Visible para el usuario
+    code: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
     name: {
       type: String,
       required: true,

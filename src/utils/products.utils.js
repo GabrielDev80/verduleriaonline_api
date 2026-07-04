@@ -1,4 +1,8 @@
-const calculateUnitCost = (package_cost, quantity) => {
+import { PRODUCTS_CATEGORIES } from "../constants/product.constants.js";
+import { getNextSequence } from "./counter.utils.js";
+
+// Calcular costo unitario de compra
+export const calculateUnitCost = (package_cost, quantity) => {
   if (!(package_cost || quantity)) {
     return 0;
   }
@@ -7,12 +11,15 @@ const calculateUnitCost = (package_cost, quantity) => {
   return unitCost;
 };
 
-const calculateSalePrice = (unitCost, margin = 50) => {
+// Calcular precio unitario de venta
+export const calculateSalePrice = (unitCost, margin = 50) => {
   const salesPrice = unitCost + (unitCost * margin) / 100;
 
   return Math.round(salesPrice);
 };
-const roundSalePrice = (salesPrice) => {
+
+// Redondear el precio de venta
+export const roundSalePrice = (salesPrice) => {
   /* 
   base: Obtiene la centena base (2842 /100 = 28,42) 
   luego Math.floor(28,42) elimina los decimales y redondea hacia abajo = (28)
@@ -34,15 +41,21 @@ const roundSalePrice = (salesPrice) => {
   return base + 99;
 };
 
-const calculateProfitAmount = (salesPrice, unitCost) => {
-  const profitAmount = salesPrice - unitCost;
+// Calcular monto de ganancia por producto
+export const calculateProfitAmount = (salesPrice, unitCost) => {
+  const profitAmount = Number(salesPrice) - Number(unitCost);
 
   return profitAmount;
 };
 
-export {
-  calculateUnitCost,
-  calculateSalePrice,
-  roundSalePrice,
-  calculateProfitAmount,
+export const generateProductCode = async (category) => {
+  const config = PRODUCTS_CATEGORIES[category];
+
+  if (!config) {
+    throw new Error(`Invalid category: ${category}`);
+  }
+
+  const next = await getNextSequence(config.counter);
+
+  return `${config.prefix}${String(next).padStart(4, "0")}`;
 };

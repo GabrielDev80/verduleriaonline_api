@@ -1,4 +1,4 @@
-import { productDTO } from "../dto/products.dto.js";
+import { createProductDTO, productResponseDTO } from "../dto/products.dto.js";
 import * as prodServices from "../services/products.service.js";
 import getLogger from "../utils/logger.utils.js";
 import {
@@ -14,10 +14,15 @@ const getproducts = async (req, res) => {
     const products = await prodServices.getAll();
     if (products.length === 0) {
       log.info("getProducts no encontró productos");
-      return;
+      return res.status(404).json({
+        status: "error",
+        message: "Products not found",
+      });
     }
 
-    const formattedProducts = products.map((product) => productDTO(product));
+    const formattedProducts = products.map((product) =>
+      productResponseDTO(product),
+    );
 
     return res.status(200).json({
       status: "success",
@@ -65,35 +70,7 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    const data = req.body;
-    const { profit_percentage } = data;
-    const { package_cost, quantity, unit } = data.purchase_costs;
-
-    const unitCost = calculateUnitCost(package_cost, quantity);
-    const salesPrice = calculateSalePrice(unitCost, profit_percentage);
-    const profitAmount = calculateProfitAmount(salesPrice, unitCost);
-    const salesPriceRounded = roundSalePrice(salesPrice);
-    const productData = {
-      name: data.name,
-      description: data.description,
-      image: data.image,
-      category: data.category,
-      sales_price: salesPriceRounded,
-      sales_unit: data.sales_unit,
-      profit_percentage,
-      profit_amount: profitAmount,
-      observations: data.observations,
-      stock: {
-        quantity: data.stock?.quantity,
-        unit: data.stock?.unit,
-      },
-      purchase_costs: {
-        package_cost: package_cost,
-        quantity: quantity,
-        unit: unit,
-        unit_cost: unitCost,
-      },
-    };
+    const productData = await createProductDTO(req.body);
 
     const newProduct = await prodServices.create(productData);
 
