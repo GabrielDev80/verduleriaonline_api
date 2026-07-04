@@ -53,8 +53,6 @@ const login = async (email, password) => {
     );
   }
 
-  await cartService.findOrCreateCart(user);
-
   const token = generateToken({
     id: user._id,
     email: user.email,
