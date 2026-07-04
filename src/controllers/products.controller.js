@@ -23,7 +23,6 @@ const getproducts = async (req, res) => {
     const formattedProducts = products.map((product) =>
       productResponseDTO(product),
     );
-
     return res.status(200).json({
       status: "success",
       message: "Products found",
@@ -73,11 +72,14 @@ const createProduct = async (req, res) => {
     const productData = await createProductDTO(req.body);
 
     const newProduct = await prodServices.create(productData);
+    const prodResponse = productResponseDTO(newProduct);
+
+    log.info("New product created successfully: ", prodResponse);
 
     return res.status(201).json({
       status: "success",
       message: "New product created successfully",
-      payload: newProduct,
+      payload: prodResponse,
     });
   } catch (error) {
     log.error("createProduct: ", error);

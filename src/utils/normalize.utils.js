@@ -15,8 +15,8 @@ export const cleanPhone = (phone) => {
 // Capitaliza cada palabra respetando acentos. "gAbRiEl nIcOlOsI" -> "Gabriel Nicolosi"
 export const capitalizeWords = (text) => {
   return cleanText(text)
-    .toLowerCase()
-    .replace(/\b\p{L}/gu, (letter) => letter.toUpperCase());
+    .toLocaleLowerCase("es")
+    .replace(/(^|\s)\p{L}/gu, (match) => match.toLocaleUpperCase("es"));
 };
 
 const normalizeAddress = (text = "") => {
