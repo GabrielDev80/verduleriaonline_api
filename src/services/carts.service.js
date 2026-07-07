@@ -1,6 +1,7 @@
 import Cart from "../models/cart.model.js";
 import User from "../models/user.model.js";
 import { cartDTO } from "../dto/carts.dto.js";
+import { AppError } from "../utils/errors.js";
 
 // ========================
 // Helpers
@@ -36,10 +37,16 @@ const getUserCart = async (userId) => {
 // Obtener carrito
 export const getCartByUserId = async (userId) => {
   const user = await User.findById(userId);
-  if (!user) throw new Error("Usuario no encontrado");
-  if (!user.cart) throw new Error("Carrito no encontrado");
 
-  const cart = await populateCart(user.cart);
+  if (!user) throw new AppError("User not found", 404);
+
+  if (user.role === "admin") {
+    throw new AppError("Administrators do not have a shopping cart", 403);
+  }
+
+  // Si el user es !== de 'admin' crear el carrito
+  const cart = await getUserCart(userId);
+
   return cartDTO(cart);
 };
 
