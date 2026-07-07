@@ -25,12 +25,36 @@ const register = async (userData) => {
     password: createHash(formattedData.password),
   });
 
-  const cart = await cartService.createUserCart();
-
-  user.cart = cart._id;
-  await user.save();
-  // console.log("authService - register: ", user);
   return user;
+};
+
+export const registerAdmin = async ({
+  username,
+  email,
+  password,
+  adminCode,
+}) => {
+  if (!process.env.ADMIN_CODE) {
+    throw new AppError("ADMIN_CODE is not configured", 500);
+  }
+  if (adminCode !== process.env.ADMIN_CODE) {
+    throw new AppError("Invalid admin code", 401);
+  }
+
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    throw new AppError("User already exists", 409);
+  }
+
+  const newUser = await User.create({
+    username,
+    email,
+    password: createHash(password),
+    role: "admin",
+  });
+
+  return normalizedUserData(newUser);
 };
 
 const login = async (email, password) => {
@@ -58,7 +82,6 @@ const login = async (email, password) => {
     email: user.email,
     role: user.role,
   });
-  // log.info("authService (back) - login (token): ", token);
 
   return {
     user,

@@ -23,6 +23,20 @@ export const register = async (req, res) => {
   }
 };
 
+export const registerAdmin = async (req, res, next) => {
+  try {
+    const admin = await authService.registerAdmin(req.body);
+
+    res.status(201).json({
+      status: "success",
+      message: "Admin created successfully",
+      payload: admin,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
