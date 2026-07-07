@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { createOrder } from "../controllers/orders.controller.js";
+import {
+  createOrder,
+  getUserOrders,
+  getUserOrderById,
+} from "../controllers/orders.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 
 const orderRouter = Router();
@@ -15,11 +19,11 @@ if (req.user.role === "admin") {
 
 return getOrdersByUser(req.user.id);
 */
-// orderRouter.get("/"); //* condicional segun role
+orderRouter.get("/", getUserOrders); //* condicional segun role
 
 orderRouter.post("/", createOrder);
 
-// orderRouter.get("/:oid");
+orderRouter.get("/:oid", getUserOrderById);
 
 // orderRouter.patch("/:oid/status"); //* Admin
 

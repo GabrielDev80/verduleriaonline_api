@@ -64,9 +64,10 @@ const orderSchema = new mongoose.Schema(
     },
 
     order_number: {
-      type: Number,
+      type: String,
       required: true,
       unique: true,
+      trim: true,
     },
 
     customer: {
@@ -166,6 +167,6 @@ orderSchema.index({ user: 1 });
 orderSchema.index({ status: 1 });
 orderSchema.index({ createdAt: -1 });
 
-const orderModel = mongoose.model(orderCollection, orderSchema);
+const Order = mongoose.model(orderCollection, orderSchema);
 
-export default orderModel;
+export default Order;
